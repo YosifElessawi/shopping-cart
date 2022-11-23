@@ -1,0 +1,44 @@
+.form-header {
+  font-family: "Courier New", Courier, monospace;
+  color: rgb(115, 230, 104);
+  font-weight: bolder;
+}
+.error {
+  color: red;
+  display: block;
+}
+.form-body {
+  display: flex;
+  flex-direction: column;
+  width: 80%;
+}
+.label {
+  font-size: larger;
+  color: white;
+  padding: 5px;
+}
+.input {
+  font-size: larger;
+  margin: 5px;
+  border-radius: 5px;
+  background-color: rgba(235, 235, 235, 0.521);
+}
+.btn {
+  color: #68db94;
+  background: #ffffff;
+  border-radius: 10px;
+  font-size: larger;
+  padding: 5px;
+  margin: 10px auto;
+  cursor: pointer;
+}
+.btn:hover {
+  background: linear-gradient(90deg, #077033 15%, #13a354 100%);
+  color: white !important;
+  transition: ease 0.3s all;
+}
+.link:hover {
+  cursor: pointer;
+  color: rgb(84, 197, 112) !important;
+  transition: ease 0.3s all;
+}

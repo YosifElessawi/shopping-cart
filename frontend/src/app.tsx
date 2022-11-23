@@ -2,6 +2,7 @@ import { Routes, Route } from "react-router-dom"
 import { Home } from "./pages/Home"
 import { About } from "./pages/About"
 import { Products } from "./pages/Products"
+import { Login } from "./pages/Login"
 import { NavBar } from "./components/NavBar"
 import { Cart } from "./components/Cart"
 import Box from "@mui/material/Box"
@@ -24,6 +25,7 @@ export function App() {
         <Route path="/" element={<Home />} />
         <Route path="/products" element={<Products />} />
         <Route path="/about" element={<About />} />
+        <Route path="/login" element={<Login />} />
       </Routes>
     </Box>
   )

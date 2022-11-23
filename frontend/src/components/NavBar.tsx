@@ -42,7 +42,7 @@ export const NavBar = ({ cartOpened, openCart }: navBarProps) => {
   const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(
     null
   )
-  const pages = ["Home", "Products", "About"]
+  const pages = ["Home", "Products", "About", "Login"]
   const settings = ["Profile", "Account", "Dashboard", "Logout"]
 
   const handleOpenUserMenu = (event: React.MouseEvent<HTMLElement>) => {

@@ -6,7 +6,7 @@
   "scripts": {
     "test": "export ENV=test && db-migrate --env test up && jasmine-ts && db-migrate --env test reset",
     "dev": "nodemon ./src/server.ts",
-    "clean": "rm -R build",
+    "clean": "rm -R build && db-migrate reset",
     "build": "npm run clean && npx tsc",
     "start": "npm run build && db-migrate up && node build/server.js",
     "lint": "eslint --fix --ext .ts"
