@@ -4,6 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "db-mig":"db-migrate --env test reset && db-migrate --env test up",
     "test": "ENV=test npx tsc && db-migrate --env test reset && db-migrate --env test up && jasmine ",
     "dev": "nodemon ./src/server.ts",
     "clean": "rm -R build/",

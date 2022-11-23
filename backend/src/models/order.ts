@@ -5,6 +5,12 @@ export type Order = {
   user_id: string
   status: string
 }
+export type Product_Order = {
+  id?: string
+  product_id: string
+  order_id: string
+  quantity: number
+}
 
 export class OrderStore {
   async index(user_id: string): Promise<Order[]> {
@@ -41,10 +47,8 @@ export class OrderStore {
     try {
       const sql = 'INSERT INTO orders (status,user_id) VALUES($1, $2) RETURNING *'
       const conn = await Client.connect()
-
-      console.log(o.user_id)
       const result = await conn.query(sql, [o.status, o.user_id])
-      const order = result.rows[0]
+      const order: Order = result.rows[0]
 
       conn.release()
 
@@ -61,7 +65,7 @@ export class OrderStore {
 
       const result = await conn.query(sql, [o.user_id, o.status, id])
 
-      const order = result.rows[0]
+      const order: Order = result.rows[0]
 
       conn.release()
 
@@ -78,7 +82,7 @@ export class OrderStore {
 
       const result = await conn.query(sql, [id])
 
-      const order = result.rows[0]
+      const order: Order = result.rows[0]
 
       conn.release()
 
@@ -88,19 +92,25 @@ export class OrderStore {
     }
   }
 
-  async addProduct(quantity: number, orderId: string, productId: string): Promise<Order> {
+  async addProduct(productOrders: Product_Order): Promise<Product_Order> {
     try {
       const sql =
         'INSERT INTO products_orders (product_id, order_id,quantity) VALUES($1, $2, $3) RETURNING *'
       const conn = await Client.connect()
-      const result = await conn.query(sql, [productId, orderId, quantity])
-      const order = result.rows[0]
+      const result = await conn.query(sql, [
+        productOrders.product_id,
+        productOrders.order_id,
+        productOrders.quantity
+      ])
+      const product_order: Product_Order = result.rows[0]
 
       conn.release()
 
-      return order
+      return product_order
     } catch (err) {
-      throw new Error(`Could not add product ${productId} to order ${orderId}: ${err}`)
+      throw new Error(
+        `Could not add product ${productOrders.product_id} to order ${productOrders.order_id}: ${err}`
+      )
     }
   }
 }

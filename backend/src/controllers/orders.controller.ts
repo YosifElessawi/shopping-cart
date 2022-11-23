@@ -1,5 +1,5 @@
 import { Request, Response } from 'express'
-import { Order, OrderStore } from '../models/order'
+import { Order, Product_Order, OrderStore } from '../models/order'
 
 const store = new OrderStore()
 export const index = async (req: Request, res: Response) => {
@@ -46,12 +46,13 @@ export const destroy = async (req: Request, res: Response) => {
 }
 
 export const addProduct = async (req: Request, res: Response) => {
-  const orderId: string = req.params.id
-  const productId: string = req.body.productId
-  const quantity: number = parseInt(req.body.quantity)
-
+  let productOrder: Product_Order = {
+    product_id: req.params.id,
+    order_id: req.body.product_id,
+    quantity: req.body.quantity
+  }
   try {
-    const addedProduct = await store.addProduct(quantity, orderId, productId)
+    const addedProduct = await store.addProduct(productOrder)
     res.json(addedProduct)
   } catch (err) {
     res.status(400)
