@@ -13,6 +13,7 @@ import ShoppingCartCheckoutSharpIcon from "@mui/icons-material/ShoppingCartCheck
 import { Link } from "react-router-dom"
 import { styled } from "@mui/material/styles"
 import CssBaseline from "@mui/material/CssBaseline"
+import "../css/navBar.css"
 
 const drawerWidth = 240
 interface AppBarProps extends MuiAppBarProps {
@@ -37,13 +38,15 @@ const AppBar = styled(MuiAppBar, {
 type navBarProps = {
   cartOpened: boolean
   openCart: () => void
+  loggedIn: boolean
 }
-export const NavBar = ({ cartOpened, openCart }: navBarProps) => {
+export const NavBar = ({ cartOpened, openCart, loggedIn }: navBarProps) => {
   const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(
     null
   )
-  const pages = ["Home", "Products", "About", "Login"]
-  const settings = ["Profile", "Account", "Dashboard", "Logout"]
+  const pages = ["Home", "Products", "About"]
+  const settingsIn = ["Profile", "Account", "Dashboard", "Logout"]
+  const settingsOut = ["Register", "Login"]
 
   const handleOpenUserMenu = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorElUser(event.currentTarget)
@@ -81,15 +84,34 @@ export const NavBar = ({ cartOpened, openCart }: navBarProps) => {
             }}
             open={Boolean(anchorElUser)}
             onClose={handleCloseUserMenu}>
-            {settings.map((setting) => (
-              <MenuItem key={setting} onClick={handleCloseUserMenu}>
-                <Typography textAlign="center">{setting}</Typography>
-              </MenuItem>
-            ))}
+            {loggedIn
+              ? settingsIn.map((setting) => (
+                  <MenuItem key={setting} onClick={handleCloseUserMenu}>
+                    <Typography textAlign="center">{setting}</Typography>
+                  </MenuItem>
+                ))
+              : settingsOut.map((setting) => (
+                  <MenuItem key={setting} onClick={handleCloseUserMenu}>
+                    <Link
+                      key={setting}
+                      style={{
+                        textDecoration: "none",
+                        color: "Black",
+                      }}
+                      to={`/${setting}`}>
+                      {setting}
+                    </Link>
+                  </MenuItem>
+                ))}
           </Menu>
-          <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" } }}>
+          <Box
+            sx={{
+              flexGrow: 1,
+              display: { xs: "none", md: "flex" },
+            }}>
             {pages.map((page) => (
               <Link
+                className="link"
                 key={page}
                 style={{
                   textDecoration: "none",

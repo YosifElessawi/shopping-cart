@@ -17,11 +17,14 @@ export const show = async (req: Request, res: Response) => {
 }
 
 export const create = async (req: Request, res: Response) => {
-  const user: User = req.body
   try {
-    const newuser = await store.create(user)
-    var token = jwt.sign({ newuser }, process.env.TOKEN_SECRET as string)
-    res.json(token)
+    const user: User | null = await store.create(req.body)
+    if (user) {
+      var token = jwt.sign({ user }, process.env.TOKEN_SECRET as string)
+      res.json(token)
+    } else {
+      res.status(409)
+    }
   } catch (err) {
     res.status(400)
     res.json(err)
@@ -48,12 +51,16 @@ export const destroy = async (req: Request, res: Response) => {
   })
 }
 
-export const authenticate = async (req: Request, res: Response) => {
+export const login = async (req: Request, res: Response) => {
   try {
     const { email, password } = req.body
-    const user: User | null = await store.authenticate(email, password)
-    var token = jwt.sign({ user }, process.env.TOKEN_SECRET as unknown as string)
-    res.json(token)
+    const user: User | null = await store.authorize(email, password)
+    console.log(user)
+    if (user) {
+      var token = jwt.sign({ user }, process.env.TOKEN_SECRET as unknown as string)
+      res.json(token)
+    }
+    res.json(null)
   } catch (err) {
     res.status(400)
     res.json(err)

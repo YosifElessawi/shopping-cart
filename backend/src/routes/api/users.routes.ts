@@ -14,6 +14,6 @@ route.put('/:id', authMiddleware, handlers.update)
 
 route.delete('/:id', authMiddleware, handlers.destroy)
 
-route.post('/authenticate', handlers.authenticate)
+route.post('/login', handlers.login)
 
 export default route

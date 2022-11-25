@@ -11,17 +11,15 @@ const hashPassword = (password: String) => {
 
 export type User = {
   id?: string
-  firstname: string
-  lastname: string
-  email: string
-  password: string
+  username: string
+  pwd: string
 }
 
 export class UserStore {
   async index(): Promise<User[]> {
     try {
       const conn = await Client.connect()
-      const sql = 'SELECT id, firstname, lastname, email FROM users'
+      const sql = 'SELECT id, username FROM users'
       const result = await conn.query(sql)
       conn.release()
       return result.rows
@@ -32,7 +30,7 @@ export class UserStore {
 
   async show(id: string): Promise<User> {
     try {
-      const sql = 'SELECT id, firstname, lastname, email FROM users WHERE id=($1)'
+      const sql = 'SELECT id, username FROM users WHERE id=($1)'
       const conn = await Client.connect()
       const result = await conn.query(sql, [id])
       conn.release()
@@ -42,37 +40,26 @@ export class UserStore {
     }
   }
 
-  async create(u: User): Promise<User> {
+  async create(u: User): Promise<User | null> {
     try {
       const sql =
-        'INSERT INTO users (firstname, lastname, email, password) VALUES($1, $2, $3, $4) RETURNING id, firstname, lastname, email'
+        'INSERT INTO users (username, pwd) VALUES($1, $2) RETURNING id, username WHERE NOT EXISTS (SELECT username FROM users WHERE SupplierName = ($3)'
       const conn = await Client.connect()
-      const result = await conn.query(sql, [
-        u.firstname,
-        u.lastname,
-        u.email,
-        hashPassword(u.password)
-      ])
+      const result = await conn.query(sql, [u.username, hashPassword(u.pwd)])
       const user = result.rows[0]
       conn.release()
       return user
     } catch (err) {
-      throw new Error(`Could not add new user ${u.firstname}. Error: ${err}`)
+      throw new Error(`Could not add new user ${u.username}. Error: ${err}`)
     }
   }
 
   async edit(id: string, u: User): Promise<User> {
     try {
       const sql =
-        'UPDATE users SET firstname=$1, lastname=$2, email=$3, password=$4 WHERE id=$5 RETURNING id, firstname, lastname, email'
+        'UPDATE users SET username=$1, pwd=$2 WHERE id=$3 RETURNING id, firstname, lastname, email'
       const conn = await Client.connect()
-      const result = await conn.query(sql, [
-        u.firstname,
-        u.lastname,
-        u.email,
-        hashPassword(u.password),
-        id
-      ])
+      const result = await conn.query(sql, [u.username, hashPassword(u.pwd), id])
       const user = result.rows[0]
       conn.release()
       return user
@@ -95,18 +82,16 @@ export class UserStore {
     }
   }
 
-  async authenticate(email: string, password: string): Promise<User | null> {
+  async authorize(username: string, pwd: string): Promise<User | null> {
     try {
       const pepper = process.env.BCRYPT_PASSWORD
-      const sql = 'SELECT password FROM users WHERE email=($1)'
-      const sql2 = 'SELECT id, firstname, lastname, email FROM users WHERE email=($1)'
+      const sql = 'SELECT pwd FROM users WHERE username=($1)'
       const conn = await Client.connect()
-      const result = await conn.query(sql, [email])
+      const result = await conn.query(sql, [username])
       if (result.rows.length) {
         const user = result.rows[0]
-        if (bcrypt.compareSync(password + pepper, user.password)) {
-          const userInfo = await conn.query(sql2, [email])
-          return userInfo.rows[0]
+        if (bcrypt.compareSync(pwd + pepper, user.pwd)) {
+          return user
         }
       }
       conn.release()
