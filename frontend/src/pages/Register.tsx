@@ -76,7 +76,7 @@ export const Register = ({ loggedIn, logIn }: RegisterProps) => {
       )
       if (response?.data.accessToken) {
         console.log(response?.data.accessToken)
-        logIn
+        logIn()
         navigate(`/products`)
       }
       //clear state and controlled inputs
