@@ -42,13 +42,22 @@ export class UserStore {
 
   async create(u: User): Promise<User | null> {
     try {
-      const sql =
-        'INSERT INTO users (username, pwd) VALUES($1, $2) RETURNING id, username WHERE NOT EXISTS (SELECT username FROM users WHERE SupplierName = ($3)'
+      const sql = `SELECT username FROM users WHERE EXISTS (SELECT username FROM users WHERE username='${u.username}')`
       const conn = await Client.connect()
-      const result = await conn.query(sql, [u.username, hashPassword(u.pwd)])
-      const user = result.rows[0]
+      let result = await conn.query(sql)
+      let user = result.rows[0]
+      console.log(user)
+      if (!user) {
+        result = await conn.query(
+          'INSERT INTO users (username, pwd) VALUES($1, $2) RETURNING id, username',
+          [u.username, hashPassword(u.pwd)]
+        )
+        user = result.rows[0]
+        console.log(user)
+        return user
+      }
+      return null
       conn.release()
-      return user
     } catch (err) {
       throw new Error(`Could not add new user ${u.username}. Error: ${err}`)
     }

@@ -41,14 +41,20 @@ export function App() {
           justifyContent: "center",
           alignItems: "center",
           minHeight: "100vh",
-          backgroundColor: "#6EC0DE",
+          backgroundColor: "#9CA5D0",
         }}>
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/products" element={<Products />} />
           <Route path="/about" element={<About />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/register" element={<Register />} />
+          <Route
+            path="/login"
+            element={<Login loggedIn={loggedIn} logIn={handleLoggedIn} />}
+          />
+          <Route
+            path="/register"
+            element={<Register loggedIn={loggedIn} logIn={handleLoggedIn} />}
+          />
         </Routes>
       </Box>
     </Box>

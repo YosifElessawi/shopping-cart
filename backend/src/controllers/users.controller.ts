@@ -19,11 +19,11 @@ export const show = async (req: Request, res: Response) => {
 export const create = async (req: Request, res: Response) => {
   try {
     const user: User | null = await store.create(req.body)
-    if (user) {
-      var token = jwt.sign({ user }, process.env.TOKEN_SECRET as string)
-      res.json(token)
+    if (!user) {
+      res.sendStatus(409)
     } else {
-      res.status(409)
+      var accessToken = jwt.sign({ user }, process.env.TOKEN_SECRET as string)
+      res.json({ accessToken: accessToken })
     }
   } catch (err) {
     res.status(400)
@@ -57,8 +57,8 @@ export const login = async (req: Request, res: Response) => {
     const user: User | null = await store.authorize(email, password)
     console.log(user)
     if (user) {
-      var token = jwt.sign({ user }, process.env.TOKEN_SECRET as unknown as string)
-      res.json(token)
+      var accessToken = jwt.sign({ user }, process.env.TOKEN_SECRET as string)
+      res.json({ accessToken: accessToken })
     }
     res.json(null)
   } catch (err) {

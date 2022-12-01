@@ -13,11 +13,7 @@ const app: Application = express()
 app.use(morgan('short'))
 
 app.use(express.json())
-app.use(
-  cors({
-    origin: 'http://localhost:5173'
-  })
-)
+app.use(cors())
 // add routes
 app.use('/', routes)
 

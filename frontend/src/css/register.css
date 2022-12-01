@@ -27,7 +27,7 @@ label {
   border-radius: 0.5rem;
 }
 .submit:hover {
-  background-color: blue;
+  background-color: rgb(80, 224, 205);
   color: #fff;
 }
 

@@ -35,12 +35,12 @@ const AppBar = styled(MuiAppBar, {
     marginRight: drawerWidth,
   }),
 }))
-type navBarProps = {
+type NavbarProps = {
   cartOpened: boolean
   openCart: () => void
   loggedIn: boolean
 }
-export const NavBar = ({ cartOpened, openCart, loggedIn }: navBarProps) => {
+export const NavBar = ({ cartOpened, openCart, loggedIn }: NavbarProps) => {
   const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(
     null
   )
