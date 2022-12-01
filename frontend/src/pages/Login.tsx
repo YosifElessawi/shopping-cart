@@ -9,7 +9,7 @@ type LoginProps = {
 }
 
 export const Login = ({ loggedIn, logIn }: LoginProps) => {
-  const { setAuth } = useContext(AuthContext)
+  // const { setAuth } = useContext(AuthContext)
   const userRef = useRef<HTMLInputElement>(null!)
   const errRef = useRef<HTMLParagraphElement>(null)
 
