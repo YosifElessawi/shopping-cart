@@ -91,15 +91,17 @@ export class UserStore {
     }
   }
 
-  async authorize(username: string, pwd: string): Promise<User | null> {
+  async authorize(u: User): Promise<User | null> {
     try {
       const pepper = process.env.BCRYPT_PASSWORD
       const sql = 'SELECT pwd FROM users WHERE username=($1)'
       const conn = await Client.connect()
-      const result = await conn.query(sql, [username])
+      console.log(u.username)
+      const result = await conn.query(sql, [u.username])
       if (result.rows.length) {
+        console.log('hena')
         const user = result.rows[0]
-        if (bcrypt.compareSync(pwd + pepper, user.pwd)) {
+        if (bcrypt.compareSync(u.pwd + pepper, user.pwd)) {
           return user
         }
       }

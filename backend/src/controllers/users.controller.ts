@@ -53,14 +53,14 @@ export const destroy = async (req: Request, res: Response) => {
 
 export const login = async (req: Request, res: Response) => {
   try {
-    const { email, password } = req.body
-    const user: User | null = await store.authorize(email, password)
+    const user: User | null = await store.authorize(req.body)
     console.log(user)
-    if (user) {
+    if (!user) {
+      res.sendStatus(401)
+    } else {
       var accessToken = jwt.sign({ user }, process.env.TOKEN_SECRET as string)
       res.json({ accessToken: accessToken })
     }
-    res.json(null)
   } catch (err) {
     res.status(400)
     res.json(err)

@@ -1,19 +1,22 @@
 import React, { useRef, useState, useEffect, useContext } from "react"
-import AuthContext from "../context/AuthProvider"
+import { AuthContext } from "../context/AuthProvider"
 import axios from "../api/axios"
 import { Link } from "react-router-dom"
-const LOGIN_URL = "/auth"
+import "../css/register.css"
+import { Container } from "@mui/system"
+
+const LOGIN_URL = "/users/login"
 type LoginProps = {
   logIn: () => void
   loggedIn: boolean
 }
 
 export const Login = ({ loggedIn, logIn }: LoginProps) => {
-  // const { setAuth } = useContext(AuthContext)
+  const { setAuth } = useContext(AuthContext)
   const userRef = useRef<HTMLInputElement>(null!)
   const errRef = useRef<HTMLParagraphElement>(null)
 
-  const [user, setUser] = useState("")
+  const [username, setUserName] = useState("")
   const [pwd, setPwd] = useState("")
   const [errMsg, setErrMsg] = useState("")
 
@@ -23,7 +26,7 @@ export const Login = ({ loggedIn, logIn }: LoginProps) => {
 
   useEffect(() => {
     setErrMsg("")
-  }, [user, pwd])
+  }, [username, pwd])
 
   const handleSubmit = async (e) => {
     e.preventDefault()
@@ -31,19 +34,17 @@ export const Login = ({ loggedIn, logIn }: LoginProps) => {
     try {
       const response = await axios.post(
         LOGIN_URL,
-        JSON.stringify({ user, pwd }),
+        JSON.stringify({ username, pwd }),
         {
           headers: { "Content-Type": "application/json" },
-          withCredentials: true,
         }
       )
       console.log(JSON.stringify(response?.data))
       const accessToken = response?.data?.accessToken
-      const roles = response?.data?.roles
-      // setAuth({ user, pwd, roles, accessToken })
-      setUser("")
+      setAuth({ username, pwd, accessToken })
+      setUserName("")
       setPwd("")
-      logIn
+      logIn()
     } catch (err) {
       if (!err?.response) {
         setErrMsg("No Server Response")
@@ -59,63 +60,63 @@ export const Login = ({ loggedIn, logIn }: LoginProps) => {
   }
 
   return (
-    <>
-      {loggedIn ? (
-        <section>
-          <h1>You are logged in!</h1>
-          <br />
-          <p>
-            <a href="#">Go to Home</a>
-          </p>
-        </section>
-      ) : (
-        <section>
-          <p
-            ref={errRef}
-            className={errMsg ? "errmsg" : "offscreen"}
-            aria-live="assertive">
-            {errMsg}
-          </p>
-          <h1>Sign In</h1>
-          <form onSubmit={handleSubmit}>
-            <label htmlFor="username">Username:</label>
-            <input
-              type="text"
-              id="username"
-              ref={userRef}
-              autoComplete="off"
-              onChange={(e) => setUser(e.target.value)}
-              value={user}
-              required
-            />
+    <Container
+      sx={{
+        marginTop: "20vh",
+        width: "100%",
+        maxWidth: "420px",
+        minHeight: "400px",
+        display: "flex",
+        flexDirection: "column",
+        justifyContent: "flex-start",
+        padding: "1rem",
+        backgroundColor: "blue",
+        borderRadius: "0.7rem",
+      }}>
+      <p
+        ref={errRef}
+        className={errMsg ? "errmsg" : "offscreen"}
+        aria-live="assertive">
+        {errMsg}
+      </p>
+      <h1>Sign In</h1>
+      <form onSubmit={handleSubmit}>
+        <label htmlFor="username">Username:</label>
+        <input
+          type="text"
+          id="username"
+          ref={userRef}
+          autoComplete="off"
+          onChange={(e) => setUserName(e.target.value)}
+          value={username}
+          required
+        />
 
-            <label htmlFor="password">Password:</label>
-            <input
-              type="password"
-              id="password"
-              onChange={(e) => setPwd(e.target.value)}
-              value={pwd}
-              required
-            />
-            <button>Log In</button>
-          </form>
-          <p>
-            Need an Account?
-            <br />
-            <Link
-              className="link"
-              key={"register"}
-              style={{
-                textDecoration: "none",
-                color: "white",
-              }}
-              to={`/register`}>
-              Login
-            </Link>
-          </p>
-        </section>
-      )}
-    </>
+        <label htmlFor="password">Password:</label>
+        <input
+          type="password"
+          id="password"
+          onChange={(e) => setPwd(e.target.value)}
+          value={pwd}
+          required
+        />
+        <button className="submit">Log In</button>
+      </form>
+      <p>
+        Need an Account?
+        <br />
+        <Link
+          className="link"
+          key={"register"}
+          style={{
+            textDecoration: "none",
+            color: "white",
+          }}
+          to={`/register`}>
+          Login
+        </Link>
+      </p>
+    </Container>
   )
 }
 
